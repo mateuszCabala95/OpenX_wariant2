@@ -19,6 +19,7 @@ class Main {
             .then(() => this.fetchPosts())
             .then(() => this.connectPostsWithUsers())
             .then(() => this.showNumberOfUserPosts())
+            .then(() => this.notUniqueTitles())
             .catch(e => console.log(e.message))
     }
 
@@ -52,6 +53,28 @@ class Main {
         } else {
             this._usersWithPosts.forEach(user => console.log(`${user.username} napisał ${user.posts?.length} postów`))
         }
+    }
+
+    //solution task No 3
+    notUniqueTitles = () => {
+        const postsTitle: string[] = []
+        const notUniqueTitles: string[] = []
+
+        this._posts.forEach(post => {
+            postsTitle.push(post.title)
+        })
+
+        postsTitle.forEach((title, i) => {
+            postsTitle.forEach((checkedTitle, j) => {
+                if (title === checkedTitle && i !== j) {
+                    notUniqueTitles.push(postsTitle[i])
+                }
+            })
+        })
+        notUniqueTitles.length === 0 ?
+            console.log("Wszystkie tytuły sa unikalne") :
+            console.log(`Powtarzające się tytuły to ${notUniqueTitles}`)
+
     }
 
 }
