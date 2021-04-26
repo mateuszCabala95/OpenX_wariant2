@@ -7,6 +7,7 @@ class Main {
     private _users: IUser[] = []
     private _posts: IPost[] = []
     private _usersWithPosts: IUser[] = []
+    private _closestUsers: Array<{ user: IUser, closestUser: IUser }> = []
 
     private _postService: PostService;
     private _userService: UserService;
@@ -20,6 +21,7 @@ class Main {
             .then(() => this.connectPostsWithUsers())
             .then(() => this.showNumberOfUserPosts())
             .then(() => this.notUniqueTitles())
+            .then(() => this.closetUsers())
             .catch(e => console.log(e.message))
     }
 
@@ -75,6 +77,44 @@ class Main {
             console.log("Wszystkie tytuły sa unikalne") :
             console.log(`Powtarzające się tytuły to ${notUniqueTitles}`)
 
+    }
+
+    //solution task No 4
+    closetUsers = () => {
+        this._users.forEach(firstUser => {
+            let closestUser: IUser;
+            let minWay = Number.MAX_VALUE
+
+
+            this._users.forEach(secondUser => {
+                let way = this.calcWay(firstUser, secondUser)
+
+                if (way < minWay && way !== 0) {
+                    minWay = way
+                    closestUser = secondUser
+                }
+            })
+
+            this._closestUsers.push({user: firstUser, closestUser})
+
+        })
+        this._closestUsers.forEach(pair => console.log(`Najbliżej użytkownika ${pair.user.username} jest użytkownik ${pair.closestUser.username}`))
+    }
+
+    private calcWay = (firstUser: IUser, secondUser: IUser): number => {
+
+
+        try {
+            //wzór na odległość między punktami
+            //sqrt((x2-x1)^2+(y2-y1)^2)
+            return Math.sqrt(
+                Math.pow((Number.parseFloat(secondUser.address.geo.lat) - Number.parseFloat(firstUser.address.geo.lat)), 2) +
+                Math.pow((Number.parseFloat(secondUser.address.geo.lng) - Number.parseFloat(firstUser.address.geo.lng)), 2)
+            )
+
+        } catch (e){
+            throw Error("something goes wrong" + e.message)
+        }
     }
 
 }
