@@ -6,6 +6,7 @@ import UserService from "./services/User.service";
 class Main {
     private _users: IUser[] = []
     private _posts: IPost[] = []
+    private _usersWithPosts: IUser[] = []
 
     private _postService: PostService;
     private _userService: UserService;
@@ -16,6 +17,7 @@ class Main {
 
         this.fetchUsers()
             .then(() => this.fetchPosts())
+            .then(() => this.connectPostsWithUsers())
             .catch(e => console.log(e.message))
     }
 
@@ -27,4 +29,20 @@ class Main {
         await this._postService.fetchPosts().then(data => this._posts = [...data])
     }
 
+    //solution task No 1
+    connectPostsWithUsers = () => {
+        this._users.forEach(user => {
+            user.posts = []
+            this._posts.forEach(post => {
+                if (user.id === post.userId) {
+                    user.posts!.push(post)
+                }
+            })
+            this._usersWithPosts.push(user)
+        })
+
+    }
+
 }
+
+const main = new Main()
