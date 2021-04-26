@@ -18,6 +18,7 @@ class Main {
         this.fetchUsers()
             .then(() => this.fetchPosts())
             .then(() => this.connectPostsWithUsers())
+            .then(() => this.showNumberOfUserPosts())
             .catch(e => console.log(e.message))
     }
 
@@ -41,6 +42,16 @@ class Main {
             this._usersWithPosts.push(user)
         })
 
+    }
+
+    //solution task No 2
+    showNumberOfUserPosts = () => {
+        if (this._usersWithPosts.length === 0) {
+            this.connectPostsWithUsers()
+            this.showNumberOfUserPosts()
+        } else {
+            this._usersWithPosts.forEach(user => console.log(`${user.username} napisał ${user.posts?.length} postów`))
+        }
     }
 
 }
